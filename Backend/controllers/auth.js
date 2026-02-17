@@ -3,66 +3,85 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 
+// ================== HELPER FUNCTION ==================
+const sendOtpMail = async (email, otp) => {
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: process.env.MAIL_USER,
+      pass: process.env.MAIL_PASS,
+    },
+  });
+
+  await transporter.sendMail({
+    from: process.env.MAIL_USER,
+    to: email,
+    subject: "HireHelper OTP Verification",
+    text: `Your HireHelper OTP is ${otp}`,
+  });
+};
+
 // ================== REGISTER ==================
 exports.register = async (req, res) => {
   try {
-    const { first_name, last_name, email_id, password } = req.body;
+    const { first_name, last_name, email_id, password, phone_number } = req.body;
 
-    if (!first_name || !last_name || !email_id || !password) {
+    if (!first_name || !last_name || !email_id || !password || !phone_number) {
       return res.status(400).json({
         success: false,
         message: "All fields are required",
       });
     }
 
-    // Check existing user
     const existingUser = await User.findOne({ email_id });
-    if (existingUser) {
-      return res.status(400).json({
-        success: false,
-        message: "User already exists",
-      });
-    }
-
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
 
     // Generate OTP
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-    // Create user
-    const user = await User.create({
+    // Case 1: User exists AND verified
+    if (existingUser && existingUser.isVerified) {
+      return res.status(400).json({
+        success: false,
+        message: "User already registered",
+      });
+    }
+
+    // Case 2: User exists BUT not verified → resend OTP
+    if (existingUser && !existingUser.isVerified) {
+      existingUser.otp = otp;
+      existingUser.otpExpiry = Date.now() + 5 * 60 * 1000;
+      await existingUser.save();
+
+      await sendOtpMail(email_id, otp);
+
+      return res.status(200).json({
+        success: true,
+        message: "OTP resent. Please verify your email.",
+      });
+    }
+
+    // Case 3: New user
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await User.create({
       first_name,
       last_name,
       email_id,
+      phone_number,
       password: hashedPassword,
       otp,
-      otpExpiry: Date.now() + 5 * 60 * 1000, // 5 minutes
+      otpExpiry: Date.now() + 5 * 60 * 1000,
     });
 
-    // Send OTP Email
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.MAIL_USER,
-        pass: process.env.MAIL_PASS,
-      },
-    });
+    await sendOtpMail(email_id, otp);
 
-    await transporter.sendMail({
-      from: process.env.MAIL_USER,
-      to: email_id,
-      subject: "HireHelper OTP Verification",
-      text: `Your OTP is ${otp}`,
-    });
-
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: "User registered. Please verify OTP.",
     });
 
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message,
     });
@@ -83,11 +102,6 @@ exports.verifyOTP = async (req, res) => {
       });
     }
 
-    console.log("DB OTP:", user.otp);
-    console.log("Entered OTP:", otp);
-    console.log("DB Expiry:", user.otpExpiry);
-    console.log("Current Time:", Date.now());
-
     if (user.otp !== otp || user.otpExpiry < Date.now()) {
       return res.status(400).json({
         success: false,
@@ -95,20 +109,19 @@ exports.verifyOTP = async (req, res) => {
       });
     }
 
-
     user.isVerified = true;
     user.otp = null;
     user.otpExpiry = null;
 
     await user.save();
 
-    res.json({
+    return res.status(200).json({
       success: true,
       message: "Account verified successfully",
     });
 
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message,
     });
@@ -122,10 +135,17 @@ exports.login = async (req, res) => {
 
     const user = await User.findOne({ email_id });
 
-    if (!user || !user.isVerified) {
+    if (!user) {
       return res.status(400).json({
         success: false,
-        message: "Invalid credentials or account not verified",
+        message: "User not found",
+      });
+    }
+
+    if (!user.isVerified) {
+      return res.status(400).json({
+        success: false,
+        message: "Please verify your email first",
       });
     }
 
@@ -144,14 +164,14 @@ exports.login = async (req, res) => {
       { expiresIn: "7d" }
     );
 
-    res.json({
+    return res.status(200).json({
       success: true,
       token,
       message: "Login successful",
     });
 
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message,
     });

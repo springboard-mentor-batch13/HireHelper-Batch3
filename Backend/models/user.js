@@ -12,6 +12,7 @@ const userSchema = new mongoose.Schema(
     },
     phone_number: {
       type: String,
+      required: true,
     },
     email_id: {
       type: String,
@@ -27,7 +28,6 @@ const userSchema = new mongoose.Schema(
       default: "",
     },
 
-    // Milestone 1 ke liye extra fields (OTP)
     isVerified: {
       type: Boolean,
       default: false,

@@ -1,7 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Register() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -10,6 +13,8 @@ export default function Register() {
     password: "",
   });
 
+  const [loading, setLoading] = useState(false);
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -17,14 +22,58 @@ export default function Register() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    alert("Account Created Successfully!");
+
+    if (
+      !formData.firstName ||
+      !formData.lastName ||
+      !formData.email ||
+      !formData.phone ||
+      !formData.password
+    ) {
+      alert("All fields are required");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      alert("Password must be at least 6 characters");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const response = await axios.post(
+        "http://localhost:4000/api/auth/register",
+        {
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email_id: formData.email,
+          phone_number: formData.phone,
+          password: formData.password,
+        }
+      );
+
+      if (response.data.success) {
+        alert(response.data.message);
+        navigate("/verify", { state: { email: formData.email } });
+      } else {
+        alert(response.data.message);
+      }
+
+    } catch (error) {
+      alert(
+        error.response?.data?.message || "Registration failed"
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen bg-[#dcefe6] flex items-center justify-center font-sans ">
-      <div className="w-[430px] bg-white p-9 rounded-xl shadow-lg text-center mt-5">
+    <div className="min-h-screen bg-[#dcefe6] flex items-center justify-center font-sans">
+      <div className="w-[430px] bg-white p-9 rounded-xl shadow-lg text-center">
 
         <div className="w-[55px] h-[55px] bg-[#27ae60] rounded-full flex items-center justify-center mx-auto mb-4 text-white text-xl">
           👤
@@ -45,9 +94,9 @@ export default function Register() {
               <input
                 type="text"
                 name="firstName"
-                placeholder="First name"
+                value={formData.firstName}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-400 transition"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -58,9 +107,9 @@ export default function Register() {
               <input
                 type="text"
                 name="lastName"
-                placeholder="Last name"
+                value={formData.lastName}
                 onChange={handleChange}
-                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-400 transition"
+                className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
           </div>
@@ -72,22 +121,22 @@ export default function Register() {
             <input
               type="email"
               name="email"
-              placeholder="Enter your email"
+              value={formData.email}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-400 transition"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <div>
             <label className="block text-sm mb-1 font-medium">
-              Phone Number (Optional)
+              Phone Number
             </label>
             <input
               type="text"
               name="phone"
-              placeholder="Enter your phone number"
+              value={formData.phone}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-400 transition"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
@@ -98,26 +147,25 @@ export default function Register() {
             <input
               type="password"
               name="password"
-              placeholder="Create a password"
+              value={formData.password}
               onChange={handleChange}
-              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-400 transition"
+              className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
 
           <button
             type="submit"
-            className="w-full py-2 bg-[#2f80ed] text-white rounded-md mt-2 hover:bg-[#1c60c9] transition"
+            disabled={loading}
+            className="w-full py-2 bg-[#2f80ed] text-white rounded-md mt-2 hover:bg-[#1c60c9] transition disabled:opacity-50"
           >
-            Create Account
+            {loading ? "Creating..." : "Create Account"}
           </button>
         </form>
 
         <p className="text-sm mt-5">
           Already have an account?{" "}
-          <span className="text-[#2f80ed] cursor-pointer font-medium">
-            <Link to="/login">
-              Sign In
-            </Link>
+          <span className="text-[#2f80ed] font-medium">
+            <Link to="/login">Sign In</Link>
           </span>
         </p>
 

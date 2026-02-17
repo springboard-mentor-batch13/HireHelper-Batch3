@@ -1,7 +1,10 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Login() {
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -14,7 +17,7 @@ export default function Login() {
     });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
@@ -22,26 +25,43 @@ export default function Login() {
       return;
     }
 
-    alert("Login Successful!");
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/auth/login",
+        {
+          email_id: formData.email,
+          password: formData.password,
+        }
+      );
+
+      // Save token
+      localStorage.setItem("token", response.data.token);
+
+      alert("Login Successful!");
+
+      // Redirect to dashboard
+      navigate("/dashboard");
+
+    } catch (error) {
+      alert(
+        error.response?.data?.message || "Login failed"
+      );
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#dcefe6] flex justify-center pt-20">
-      
       <div className="w-[430px] bg-white p-8 rounded-xl shadow-lg text-center">
 
-        {/* Icon */}
         <div className="w-14 h-14 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-xl">
           🔐
         </div>
 
-        {/* Heading */}
         <h2 className="text-2xl font-semibold">Welcome Back</h2>
         <p className="text-sm text-gray-500 mb-6">
           Sign in to your account
         </p>
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="text-left space-y-4">
 
           <div>
@@ -83,9 +103,7 @@ export default function Login() {
         <p className="text-sm mt-5">
           Don't have an account?{" "}
           <span className="text-blue-600 cursor-pointer font-medium">
-            <Link to="/register">
-            Register
-            </Link>
+            <Link to="/register">Register</Link>
           </span>
         </p>
 
