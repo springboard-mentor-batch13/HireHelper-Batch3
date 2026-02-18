@@ -2,10 +2,10 @@ import { Link } from "react-router-dom";
 
 export default function Navbar() {
   return (
-    <nav className="w-full bg-white shadow-md py-4 px-8 flex justify-between items-center">
+    <nav className="w-full bg-[#dcefe6] shadow-md py-4 px-8 flex justify-between items-center">
       
       <h1 className="text-lg font-semibold text-[#2f80ed]">
-        HireHelper
+        <Link to="/">HireHelper</Link>
       </h1>
 
       <div className="space-x-4">

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
+
 
 export default function Register() {
   const navigate = useNavigate();
@@ -14,6 +16,9 @@ export default function Register() {
   });
 
   const [loading, setLoading] = useState(false);
+
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
 
   const handleChange = (e) => {
     setFormData({
@@ -32,12 +37,21 @@ export default function Register() {
       !formData.phone ||
       !formData.password
     ) {
-      alert("All fields are required");
+      toast.error("All fields are required");
       return;
     }
 
-    if (formData.password.length < 6) {
-      alert("Password must be at least 6 characters");
+    if (!passwordRegex.test(formData.password)) {
+      toast.error(
+        "Password must contain uppercase, lowercase, number, special character and minimum 8 characters"
+      );
+      return;
+    }
+
+    const phoneRegex = /^[0-9]{10}$/;
+
+    if (!phoneRegex.test(formData.phone)) {
+      toast.error("Phone number must be exactly 10 digits");
       return;
     }
 
@@ -56,14 +70,14 @@ export default function Register() {
       );
 
       if (response.data.success) {
-        alert(response.data.message);
+        toast.success(response.data.message);
         navigate("/verify", { state: { email: formData.email } });
       } else {
-        alert(response.data.message);
+        toast.error(response.data.message);
       }
 
     } catch (error) {
-      alert(
+      toast.error(
         error.response?.data?.message || "Registration failed"
       );
     } finally {
@@ -134,6 +148,8 @@ export default function Register() {
             <input
               type="text"
               name="phone"
+              maxLength="10"
+              pattern="[0-9]*"
               value={formData.phone}
               onChange={handleChange}
               className="w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"

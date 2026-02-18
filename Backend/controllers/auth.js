@@ -177,3 +177,61 @@ exports.login = async (req, res) => {
     });
   }
 };
+
+
+// ================== RESEND OTP ==================
+exports.resendOTP = async (req, res) => {
+  try {
+
+    const { email_id } = req.body;
+
+    if (!email_id) {
+      return res.status(400).json({
+        success: false,
+        message: "Email is required",
+      });
+    }
+
+    const user = await User.findOne({ email_id });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    if (user.isVerified) {
+      return res.status(400).json({
+        success: false,
+        message: "User already verified",
+      });
+    }
+
+    // generate new OTP
+    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+
+    user.otp = otp;
+    user.otpExpiry = Date.now() + 5 * 60 * 1000;
+
+    await user.save();
+
+    await sendOtpMail(email_id, otp);
+
+    return res.status(200).json({
+      success: true,
+      message: "OTP resent successfully",
+    });
+
+  }
+
+  catch (error) {
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+
+  }
+};
+

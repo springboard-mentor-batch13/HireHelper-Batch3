@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -21,7 +22,7 @@ export default function Login() {
     e.preventDefault();
 
     if (!formData.email || !formData.password) {
-      alert("Please fill all fields");
+      toast.error("Please fill all fields");
       return;
     }
 
@@ -37,21 +38,21 @@ export default function Login() {
       // Save token
       localStorage.setItem("token", response.data.token);
 
-      alert("Login Successful!");
+      toast.success("Login Successful!");
 
       // Redirect to dashboard
       navigate("/dashboard");
 
     } catch (error) {
-      alert(
+      toast.error(
         error.response?.data?.message || "Login failed"
       );
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#dcefe6] flex justify-center pt-20">
-      <div className="w-[430px] bg-white p-8 rounded-xl shadow-lg text-center">
+    <div className="min-h-screen bg-[#dcefe6] flex justify-center pt-4">
+      <div className="w-[430px] h-[500px] bg-white p-8 rounded-xl shadow-lg text-center">
 
         <div className="w-14 h-14 bg-green-600 rounded-full flex items-center justify-center mx-auto mb-4 text-white text-xl">
           🔐

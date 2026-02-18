@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import VerifyOTP from "./pages/VerifyOTP";
 import Dashboard from "./pages/Dashboard";
 import ProtectedRoute from "./components/ProtectedRoute";
+import HeroSection from "./components/HeroSection";
 
 function App() {
   return (
@@ -13,6 +14,8 @@ function App() {
 
       <Routes>
         {/* Public Routes */}
+        <Route path="/" element={<HeroSection />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/verify" element={<VerifyOTP />} />
