@@ -10,6 +10,9 @@ import Feed from "./pages/Feed";
 import AddTask from "./pages/AddTask";
 import MyTasks from "./pages/MyTasks";
 
+import Requests from "./pages/Requests";
+import MyRequests from "./pages/MyRequests";
+
 import ProtectedRoute from "./components/ProtectedRoute";
 import HeroSection from "./components/HeroSection";
 
@@ -53,6 +56,10 @@ element={
 <Route path="my-tasks" element={<MyTasks />} />
 
 <Route path="add-task" element={<AddTask />} />
+
+<Route path="requests" element={<Requests />} />
+
+<Route path="myRequests" element={<MyRequests />} />
 
 </Route>
 

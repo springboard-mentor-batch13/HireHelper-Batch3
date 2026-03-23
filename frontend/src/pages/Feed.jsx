@@ -5,73 +5,82 @@ import TaskCard from "../components/TaskCard";
 
 export default function Feed() {
 
-const [tasks, setTasks] = useState([]);
-const [loading, setLoading] = useState(true);
+  const [tasks, setTasks] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [requestingId, setRequestingId] = useState(null);
+  const [requestedTasks, setRequestedTasks] = useState([]);
 
-/* -------------------------- FETCH ALL TASKS -------------------------- */
-
-useEffect(() => {
-
-const fetchTasks = async () => {
-
-try {
-    const response = await API.get("/tasks/allTasks");
-    setTasks(response.data.tasks || []);
-}
-catch (error) {
-    console.log(error);
-    toast.error("Unable to load tasks");
-}
-finally {
-    setLoading(false);
-}
-};
-fetchTasks();
-}, []);
-
-/* -------------------------- SEND REQUEST -------------------------- */
-
-const handleRequest = async (taskId) => {
-    try {
-        await API.post("/requests/send", {
-            task_id: taskId
-        });
-        toast.success("Request sent successfully");
-    }
-    catch (error) {
+  useEffect(() => {
+    const fetchTasks = async () => {
+      try {
+        const response = await API.get("/tasks/allTasks");
+        setTasks(response.data.tasks || []);
+      } catch (error) {
         console.log(error);
-        toast.error(error.response?.data?.message ||"Failed to send request");
+        toast.error("Unable to load tasks");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchTasks();
+  }, []);
+
+  const handleRequest = async (taskId) => {
+    try {
+      setRequestingId(taskId);
+
+      await API.post("/requests/send", {
+        task_id: taskId,
+      });
+
+      toast.success("Request sent successfully");
+
+      // ✅ mark as requested (UI update)
+      setRequestedTasks((prev) => [...prev, taskId]);
+
+    } catch (error) {
+      console.log(error);
+      toast.error(error.response?.data?.message || "Failed to send request");
+    } finally {
+      setRequestingId(null);
     }
-};
+  };
 
-/* -------------------------- UI -------------------------- */
-
-return (
+  return (
     <div className="mt-6">
-        {/* LOADING */}
-        {loading && (
-            <p className="text-center mt-20 text-gray-500">
-                Loading tasks...
-            </p>
-        )}
-        {/* EMPTY */}
-        {!loading && tasks.length === 0 && (
-            <p className="text-center mt-20 text-gray-500">
-                No tasks available
-            </p>
-        )}
-        {/* TASK GRID */}
-        {!loading && tasks.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {tasks.map(task => (
-                    <TaskCard
-                    key={task._id}
-                    task={task}
-                    showRequest={true}
-                    onRequest={handleRequest}/>
-                ))}
-            </div>
-        )}
+
+      {/* LOADING */}
+      {loading && (
+        <p className="text-center mt-20 text-gray-500">
+          Loading tasks...
+        </p>
+      )}
+
+      {/* EMPTY */}
+      {!loading && tasks.length === 0 && (
+        <p className="text-center mt-20 text-gray-500">
+          No tasks available
+        </p>
+      )}
+
+      {/* TASK GRID */}
+      {!loading && tasks.length > 0 && (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+          {tasks.map((task) => (
+            <TaskCard
+              key={task._id}
+              task={task}
+              showRequest={true}
+              onRequest={handleRequest}
+              requestingId={requestingId}
+              isRequested={requestedTasks.includes(task._id)}
+            />
+          ))}
+
+        </div>
+      )}
+
     </div>
-);
+  );
 }

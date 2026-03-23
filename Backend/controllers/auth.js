@@ -235,3 +235,25 @@ exports.resendOTP = async (req, res) => {
   }
 };
 
+
+
+// ------------------- Get Me--------------------------
+
+exports.getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id)
+      .select("first_name last_name email_id");
+
+    res.status(200).json({
+      success: true,
+      user,
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+

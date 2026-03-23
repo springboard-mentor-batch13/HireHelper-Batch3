@@ -37,6 +37,7 @@ export default function Login() {
 
       // Save token
       localStorage.setItem("token", response.data.token);
+      
 
       toast.success("Login Successful!");
 

@@ -59,6 +59,11 @@ export default function AddTask() {
 /* -------------------------- SUBMIT TASK -------------------------- */
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        if (!taskData.title.trim()) {
+        toast.error("Task title is required");
+        return;
+    }
         if (loading) return;
         try {
             setLoading(true);

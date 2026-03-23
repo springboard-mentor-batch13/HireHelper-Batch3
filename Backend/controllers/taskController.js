@@ -11,76 +11,57 @@ function isFileTypeSupported(type, supportedTypes) {
 // ----------------- CREATE TASK -------------------------
 
 exports.createTask = async (req, res) => {
-
   try {
 
     const { title, description, location, start_time, end_time } = req.body || {};
-
     const userId = req.user.id;
 
-    const file = req.files.picture;
+    let imageUrl = "";
 
-    console.log("FILE FOUND:", file);
+    // ✅ CHECK IF IMAGE EXISTS
+    if (req.files && req.files.picture) {
 
-    // validate file type
-    const supportedTypes = ["jpg", "jpeg", "png"];
+      const file = req.files.picture;
 
-    const fileType = file.name.split(".")[1].toLowerCase();
+      const supportedTypes = ["jpg", "jpeg", "png"];
+      const fileType = file.name.split(".")[1].toLowerCase();
 
-    if (!isFileTypeSupported(fileType, supportedTypes)) {
+      if (!isFileTypeSupported(fileType, supportedTypes)) {
+        return res.status(400).json({
+          success: false,
+          message: "File Format is not supported",
+        });
+      }
 
-      return res.status(400).json({
-        success: false,
-        message: "File Format is not supported",
-      });
-
+      // upload to cloudinary
+      const response = await uploadImageToCloudinary(file, "hirehelper");
+      imageUrl = response.secure_url;
     }
 
-
-    // upload to cloudinary
-    const response = await uploadImageToCloudinary(
-      file,
-      "hirehelper"
-    );
-
-    console.log("CLOUDINARY URL:", response);
-
-
-    // save to database
+    // ✅ CREATE TASK (WITH OR WITHOUT IMAGE)
     const task = await Task.create({
-
       createdBy: userId,
       title,
       description,
       location,
       start_time,
       end_time,
-      picture: response.secure_url,
-
+      picture: imageUrl,
     });
 
-
-    // success response
     res.status(200).json({
-
       success: true,
       message: "Task created successfully",
-      imageUrl: response.secure_url,
-
+      task,
     });
 
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({
+      success: false,
+      message: "Something went wrong",
+    });
   }
-
-  catch (error) {
-
-     console.error(error);
-        res.status(400).json({
-            success: false,
-            message: 'Something went wrong'
-        })
-
-  }
-
 };
 
 // ------------------------- GET ALL TASKS -------------------------

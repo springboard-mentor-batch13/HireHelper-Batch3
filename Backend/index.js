@@ -36,6 +36,12 @@ app.use("/api/auth",require("./routes/auth"));
 // Task routes (Milestone-2)
 app.use("/api/tasks",require("./routes/taskRoutes"));
 
+// Request routes
+app.use("/api/requests", require("./routes/requestRoutes"));
+
+// Notification routes
+app.use("/api/notifications", require("./routes/notificationRoutes"));
+
 // ================= DEFAULT ROUTE =================
 app.get("/",  (req, res) => {
   res.send("HireHelper API is running");
