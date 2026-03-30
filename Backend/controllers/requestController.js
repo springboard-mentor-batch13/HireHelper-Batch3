@@ -4,7 +4,7 @@ const User = require("../models/User");
 const Notification = require("../models/Notification");
 const AcceptedTask = require("../models/AcceptedTask");
 
-// ================= SEND REQUEST =================
+// ------------------------------- SEND REQUEST -------------------------------
 
 exports.sendRequest = async (req, res) => {
   try {
@@ -67,7 +67,7 @@ exports.sendRequest = async (req, res) => {
   }
 };
 
-// ================= GET REQUESTS (OWNER) =================
+// ------------------------------- GET REQUESTS (OWNER) -------------------------------
 
 exports.getRequestsForOwner = async (req, res) => {
   try {
@@ -95,16 +95,23 @@ exports.getRequestsForOwner = async (req, res) => {
   }
 };
 
-// ================= MY REQUESTS =================
+// ------------------------------- MY REQUESTS -------------------------------
 
 exports.getMyRequests = async (req, res) => {
   try {
     const requester_id = req.user.id;
 
-    const requests = await Request.find({ requester_id }).populate(
-      "task_id",
-      "title description location start_time end_time picture"
-    );
+    const requests = await Request.find({ requester_id })
+      .populate({
+        path: "task_id",
+        select: "title description location start_time end_time picture createdBy",
+        populate: {
+          path: "createdBy",
+          select: "first_name last_name"
+        }
+      });
+
+      const validRequests = requests.filter(r => r.task_id !== null);
 
     res.status(200).json({
       success: true,
@@ -118,7 +125,7 @@ exports.getMyRequests = async (req, res) => {
   }
 };
 
-// ================= ACCEPT REQUEST =================
+// ------------------------------- ACCEPT REQUEST -------------------------------
 
 exports.acceptRequest = async (req, res) => {
   try {
@@ -133,7 +140,6 @@ exports.acceptRequest = async (req, res) => {
       });
     }
 
-    // 🔴 SECURITY FIX (very important)
     const task = await Task.findById(request.task_id);
 
     if (task.createdBy.toString() !== req.user.id) {
@@ -190,7 +196,7 @@ exports.acceptRequest = async (req, res) => {
   }
 };
 
-// ================= REJECT REQUEST =================
+// ------------------------------- REJECT REQUEST -------------------------------
 
 exports.rejectRequest = async (req, res) => {
   try {
@@ -205,7 +211,7 @@ exports.rejectRequest = async (req, res) => {
       });
     }
 
-    // 🔴 SECURITY FIX
+  
     const task = await Task.findById(request.task_id);
 
     if (task.createdBy.toString() !== req.user.id) {

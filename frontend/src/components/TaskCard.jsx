@@ -1,4 +1,4 @@
-import { FiMapPin, FiClock } from "react-icons/fi";
+import { FiMapPin, FiClock, FiSend } from "react-icons/fi";
 
 export default function TaskCard({
   task,
@@ -8,131 +8,98 @@ export default function TaskCard({
   isRequested
 }) {
 
-  const formatDate = (date) => {
-    if (!date) return "No date";
-    const d = new Date(date);
-    if (isNaN(d)) return "Invalid date";
-    return d.toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric"
-    });
-  };
+  const getTimeAgo = (date) => {
+    if (!date) return "No time";
+    const now = new Date();
+    const diff = now - new Date(date);
+    const hours = Math.floor(diff / (1000 * 60 * 60));
 
-  const formatTime = (date) => {
-    if (!date) return "";
-    const d = new Date(date);
-    if (isNaN(d)) return "";
-    return d.toLocaleTimeString([], {
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: true
-    });
+    if (hours < 1) return "Just now";
+    if (hours < 24) return `${hours}h ago`;
+    return `${Math.floor(hours / 24)}d ago`;
   };
 
   const getStatusColor = () => {
     switch (task.status) {
-      case "active":
-        return "bg-green-100 text-green-600";
-      case "pending":
-        return "bg-yellow-100 text-yellow-600";
+      case "open":
+        return "bg-green-100 text-green-700";
+      case "accepted":
+        return "bg-blue-100 text-blue-700";
       case "completed":
-        return "bg-blue-100 text-blue-600";
+        return "bg-gray-100 text-gray-700";
       default:
         return "bg-gray-100 text-gray-600";
     }
   };
 
   return (
-    <div className="ml-5 bg-white w-79 rounded-xl shadow hover:shadow-lg transition overflow-hidden border">
+    <div className="bg-white rounded-xl shadow-sm hover:shadow-md transition overflow-hidden border">
 
       {/* IMAGE */}
-<div className="w-full h-44 overflow-hidden">
+      <div className="h-44 w-full">
+        {task.picture ? (
+          <img
+            src={task.picture}
+            alt="task"
+            className="w-full h-full object-cover"
+          />
+        ) : (
+          <div className="w-full h-full bg-blue-600 flex items-center justify-center text-white font-semibold text-sm">
+            {task.title}
+          </div>
+        )}
+      </div>
 
-  {task.picture ? (
-
-    <img
-      src={task.picture}
-      alt="task"
-      className="w-full h-full object-cover"
-    />
-
-  ) : (
-
-    <div className="w-full h-full bg-blue-900 flex items-center justify-center">
-
-      <h2 className="text-white text-xl font-semibold capitalize">
-        {task.title}
-      </h2>
-
-    </div>
-
-  )}
-
-</div>
-
+      {/* CONTENT */}
       <div className="p-4">
 
-        {/* CATEGORY + STATUS */}
+        {/* TITLE + STATUS */}
         <div className="flex justify-between items-center mb-2">
+          <h3 className="text-base font-semibold text-gray-900 line-clamp-1">
+            {task.title}
+          </h3>
 
-          {task.category && (
-            <span className="text-xs bg-blue-100 text-blue-600 px-2 py-1 rounded-md font-medium capitalize">
-              {task.category}
-            </span>
-          )}
-
-          {task.status && (
-            <span className={`text-xs px-2 py-1 rounded-md font-medium capitalize ${getStatusColor()}`}>
-              {task.status}
-            </span>
-          )}
-
-        </div>
-
-        {/* TITLE */}
-        <h3 className="font-semibold text-lg text-gray-800">
-          {task.title}
-        </h3>
-
-        {/* DESCRIPTION */}
-        <p className="text-sm text-gray-500 line-clamp-2 mt-1">
-          {task.description}
-        </p>
-
-        {/* LOCATION */}
-        <div className="flex items-center gap-2 text-sm text-gray-600 mt-3">
-          <FiMapPin size={15} />
-          <span>{task.location || "No location"}</span>
-        </div>
-
-        {/* DATE + TIME */}
-        <div className="flex items-center gap-2 text-sm text-gray-500 mt-1">
-          <FiClock size={15} />
-          <span>
-            {formatDate(task.start_time)}{" • "}
-            {formatTime(task.start_time)}
-            {task.end_time && <>{" - "}{formatTime(task.end_time)}</>}
+          <span className={`text-xs px-2 py-1 rounded-full ${getStatusColor()}`}>
+            {task.status}
           </span>
         </div>
 
-        {/* REQUEST BUTTON */}
+        {/* DESC */}
+        <p className="text-sm text-gray-500 line-clamp-2 mb-3">
+          {task.description || "No description"}
+        </p>
+
+        {/* LOCATION */}
+        <div className="flex items-center text-xs text-gray-500 mb-1">
+          <FiMapPin className="mr-1" />
+          {task.location || "No location"}
+        </div>
+
+        {/* TIME */}
+        <div className="flex items-center text-xs text-gray-500 mb-3">
+          <FiClock className="mr-1" />
+          {getTimeAgo(task.createdAt)}
+        </div>
+
+        {/* BUTTON */}
         {showRequest && (
           <button
-            disabled={requestingId === task._id || isRequested}
+            disabled={requestingId === task._id || isRequested || task.status !== "open"}
             onClick={() => onRequest(task._id)}
-            className="bg-green-600 text-white w-full mt-4 py-2 rounded-lg hover:bg-green-800 transition font-medium disabled:opacity-50"
+            className="w-full bg-blue-600 text-white py-2 rounded-lg text-sm flex items-center justify-center gap-2 hover:bg-blue-700 transition disabled:opacity-50"
           >
+            <FiSend size={14} />
             {isRequested
               ? "Requested"
               : requestingId === task._id
               ? "Sending..."
-              : "Request"}
+              : task.status !== "open"
+              ? "Closed"
+              : "Send Request"}
           </button>
         )}
 
       </div>
-
     </div>
   );
 }

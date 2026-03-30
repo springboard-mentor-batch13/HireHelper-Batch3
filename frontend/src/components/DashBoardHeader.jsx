@@ -54,7 +54,7 @@ export default function DashBoardHeader({ title, subtitle }) {
 
   return (
 
-    <div className="bg-white px-6 py-2.5 flex justify-between items-center">
+    <div className="bg-white px-2 py-2.5 flex justify-between items-center">
 
       {/* LEFT */}
       <div>

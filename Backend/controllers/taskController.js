@@ -1,4 +1,5 @@
 const Task = require("../models/Task");
+const Request = require("../models/Request");
 const { uploadImageToCloudinary } = require("../utils/imageUploader");
 
 // -------------------------CHECK FILE TYPE -------------------------
@@ -111,6 +112,58 @@ exports.getMyTasks = async (req, res) => {
     res.status(500).json({
       success: false,
       message: error.message,
+    });
+  }
+};
+
+// --------------------------------------DashBoard Data------------------------------------
+
+exports.getDashboardData = async (req, res) => {
+  try {
+
+    const userId = req.user.id;
+
+    // ---------------- TASK STATS ----------------
+    const totalTasks = await Task.countDocuments({ createdBy: userId });
+
+    const activeTasks = await Task.countDocuments({
+      createdBy: userId,
+      status: { $in: ["open", "accepted"] }
+    });
+
+    const completedTasks = await Task.countDocuments({
+      createdBy: userId,
+      status: "completed"
+    });
+
+    // ---------------- REQUESTS ----------------
+    const requests = await Request.find().populate("task_id");
+
+    const requestsReceived = requests.filter(
+      (r) => r.task_id?.createdBy?.toString() === userId
+    ).length;
+
+    // ---------------- RECENT TASKS ----------------
+    const recentTasks = await Task.find({ createdBy: userId })
+      .sort({ createdAt: -1 })
+      .limit(5);
+
+    res.status(200).json({
+      success: true,
+      stats: {
+        totalTasks,
+        activeTasks,
+        completedTasks,
+        requestsReceived
+      },
+      recentTasks
+    });
+
+  } catch (error) {
+    console.log("DASHBOARD ERROR:", error);
+    res.status(500).json({
+      success: false,
+      message: "Error fetching dashboard data"
     });
   }
 };

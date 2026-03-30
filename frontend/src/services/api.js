@@ -1,10 +1,10 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:4000/api",
+  baseURL: "http://localhost:4000/api", 
 });
 
-// attach token automatically
+// 🔹 REQUEST INTERCEPTOR
 API.interceptors.request.use(
   (config) => {
     const token = localStorage.getItem("token");
@@ -13,12 +13,27 @@ API.interceptors.request.use(
       config.headers.Authorization = `Bearer ${token}`;
     }
 
-    // small safe addition
-    config.headers["Content-Type"] = "application/json";
-
     return config;
   },
+  (error) => Promise.reject(error)
+);
+
+// 🔹 RESPONSE INTERCEPTOR
+API.interceptors.response.use(
+  (response) => response,
   (error) => {
+
+    // 🔥 AUTO LOGOUT
+    if (error.response?.status === 401) {
+      localStorage.removeItem("token");
+      window.location.href = "/login";
+    }
+
+    // 🔥 SERVER ERROR HANDLE
+    if (error.response?.status === 500) {
+      console.error("Server error:", error.response.data);
+    }
+
     return Promise.reject(error);
   }
 );

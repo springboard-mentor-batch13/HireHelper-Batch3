@@ -42,6 +42,9 @@ app.use("/api/requests", require("./routes/requestRoutes"));
 // Notification routes
 app.use("/api/notifications", require("./routes/notificationRoutes"));
 
+// Settings routes
+app.use("/api/user", require("./routes/userRoutes"));
+
 // ================= DEFAULT ROUTE =================
 app.get("/",  (req, res) => {
   res.send("HireHelper API is running");

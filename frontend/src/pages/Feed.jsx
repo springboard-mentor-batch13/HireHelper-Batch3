@@ -13,11 +13,10 @@ export default function Feed() {
   useEffect(() => {
     const fetchTasks = async () => {
       try {
-        const response = await API.get("/tasks/allTasks");
-        setTasks(response.data.tasks || []);
-      } catch (error) {
-        console.log(error);
-        toast.error("Unable to load tasks");
+        const res = await API.get("/tasks/allTasks");
+        setTasks(res.data.tasks || []);
+      } catch (err) {
+        toast.error("Failed to load tasks");
       } finally {
         setLoading(false);
       }
@@ -29,55 +28,50 @@ export default function Feed() {
     try {
       setRequestingId(taskId);
 
-      await API.post("/requests/send", {
-        task_id: taskId,
-      });
+      await API.post("/requests/send", { task_id: taskId });
 
-      toast.success("Request sent successfully");
-
-      // ✅ mark as requested (UI update)
       setRequestedTasks((prev) => [...prev, taskId]);
+      toast.success("Request sent");
 
-    } catch (error) {
-      console.log(error);
-      toast.error(error.response?.data?.message || "Failed to send request");
+    } catch (err) {
+      toast.error("Request failed");
     } finally {
       setRequestingId(null);
     }
   };
 
   return (
-    <div className="mt-6">
+    <div className="p-6 "> 
+
+      {/* HEADER */}
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold text-gray-900">Task Feed</h1>
+        <p className="text-gray-500 text-sm">
+          Browse tasks and send requests
+        </p>
+      </div>
 
       {/* LOADING */}
-      {loading && (
-        <p className="text-center mt-20 text-gray-500">
-          Loading tasks...
-        </p>
-      )}
+      {loading && <p className="text-center mt-20 text-gray-500">Loading...</p>}
 
       {/* EMPTY */}
       {!loading && tasks.length === 0 && (
-        <p className="text-center mt-20 text-gray-500">
-          No tasks available
-        </p>
+        <p className="text-center mt-20 text-gray-500">No tasks available</p>
       )}
 
-      {/* TASK GRID */}
+      {/* GRID */}
       {!loading && tasks.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
           {tasks.map((task) => (
             <TaskCard
               key={task._id}
               task={task}
-              showRequest={true}
+              showRequest
               onRequest={handleRequest}
               requestingId={requestingId}
               isRequested={requestedTasks.includes(task._id)}
             />
           ))}
-
         </div>
       )}
 

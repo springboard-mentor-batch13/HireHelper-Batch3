@@ -1,7 +1,7 @@
 import { Routes, Route, useLocation } from "react-router-dom";
 
-import Navbar from "./components/Navbar";
-import Login from "./pages/Login";
+import Navbar from "./components/landing/Navbar";
+import Login from "./pages/login";
 import Register from "./pages/Register";
 import VerifyOTP from "./pages/VerifyOTP";
 import DashBoard from "./pages/DashBoard";
@@ -13,63 +13,75 @@ import MyTasks from "./pages/MyTasks";
 import Requests from "./pages/Requests";
 import MyRequests from "./pages/MyRequests";
 
+import Settings from "./pages/Settings";
+
+import ChangePasswordEmail from "./pages/ChangePasswordEmail";
+import ChangePasswordOTP from "./pages/ChangePasswordOTP";
+import ChangePasswordNew from "./pages/ChangePasswordNew";
+
+import ForgotPassword from "./pages/ForgotPassword";
+import UpdatePassword from "./pages/UpdatePassword";
+
 import ProtectedRoute from "./components/ProtectedRoute";
-import HeroSection from "./components/HeroSection";
+import LandingPage from "./pages/LandingPage";
+
+// 🔥 NEW IMPORT (IMPORTANT)
+import DashboardHome from "./pages/DashBoardHome";
 
 function App() {
 
-const location = useLocation();
+  const location = useLocation();
 
-// hide navbar on all dashboard routes
-const hideNavbar = location.pathname.startsWith("/dashboard");
+  // hide navbar on all dashboard routes
+  const hideNavbar = location.pathname.startsWith("/dashboard");
 
-return (
+  return (
+    <>
 
-<>
+      {/* Navbar */}
+      {!hideNavbar && <Navbar />}
 
-{/* Show Navbar only when NOT dashboard */}
+      <Routes>
 
-{!hideNavbar && <Navbar />}
+        {/* 🔹 PUBLIC ROUTES */}
+        <Route path="/" element={<LandingPage />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/verify" element={<VerifyOTP />} />
 
-<Routes>
+        {/* 🔥 DASHBOARD */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <DashBoard />
+            </ProtectedRoute>
+          }
+        >
+          {/* ✅ DEFAULT PAGE (MOST IMPORTANT 🔥) */}
+          <Route index element={<DashboardHome />} />
 
-<Route path="/" element={<HeroSection />} />
+          <Route path="feed" element={<Feed />} />
+          <Route path="my-tasks" element={<MyTasks />} />
+          <Route path="add-task" element={<AddTask />} />
+          <Route path="requests" element={<Requests />} />
+          <Route path="myRequests" element={<MyRequests />} />
+          <Route path="settings" element={<Settings />} />
+        </Route>
 
-<Route path="/login" element={<Login />} />
+        {/* 🔹 CHANGE PASSWORD */}
+        <Route path="/change-password/email" element={<ChangePasswordEmail />} />
+        <Route path="/change-password/otp" element={<ChangePasswordOTP />} />
+        <Route path="/change-password/new" element={<ChangePasswordNew />} />
 
-<Route path="/register" element={<Register />} />
+        {/* 🔹 FORGOT PASSWORD */}
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/update-password/:token" element={<UpdatePassword />} />
 
-<Route path="/verify" element={<VerifyOTP />} />
+      </Routes>
 
-
-<Route
-path="/dashboard"
-element={
-<ProtectedRoute>
-<DashBoard />
-</ProtectedRoute>
-}
->
-
-<Route path="feed" element={<Feed />} />
-
-<Route path="my-tasks" element={<MyTasks />} />
-
-<Route path="add-task" element={<AddTask />} />
-
-<Route path="requests" element={<Requests />} />
-
-<Route path="myRequests" element={<MyRequests />} />
-
-</Route>
-
-
-</Routes>
-
-</>
-
-);
-
+    </>
+  );
 }
 
 export default App;
