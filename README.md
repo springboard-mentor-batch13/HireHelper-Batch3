@@ -5,7 +5,7 @@ HireHelper is a **full-stack web application** that connects users who need help
 It provides a complete workflow:  
 ➡️ Task Creation → Request Sending → Accept/Reject → Notifications → Task Management
 
-![LandingPage](./screenshots/hirehelper.png)
+![LandingPage](./screenshots/HireHelper.png)
 
 ---
 
@@ -39,7 +39,7 @@ HireHelper allows users to:
 
 ### 🔐 Authentication System
 
-![Login](./screenshots/login.png)
+![Login](./screenshots/LoginPage.png)
 
 - User Registration & Login  
 - Email OTP Verification (Nodemailer)  
@@ -51,7 +51,7 @@ HireHelper allows users to:
 
 ### 📊 Dashboard
 
-![Dashboard](./screenshots/dashboard.png)
+![Dashboard](./screenshots/DashBoard.png)
 
 - Sidebar Navigation  
 - Search Bar  
@@ -64,7 +64,7 @@ HireHelper allows users to:
 
 #### ➕ Add Task
 
-![Add Task](./screenshots/addTask.png)
+![Add Task](./screenshots/AddTask.png)
 
 - Title & Description  
 - Location & Time Selection  
@@ -75,7 +75,7 @@ HireHelper allows users to:
 
 #### 📰 Task Feed
 
-![Feed](./screenshots/feed.png)
+![Feed](./screenshots/Feed.png)
 
 - View all tasks  
 - Request button  
@@ -86,7 +86,7 @@ HireHelper allows users to:
 
 #### 📁 My Tasks
 
-![My Tasks](./screenshots/myfeed.png)
+![My Tasks](./screenshots/MyTasks.png)
 
 - View created tasks  
 - Image support  
@@ -98,7 +98,7 @@ HireHelper allows users to:
 
 #### 📥 Incoming Requests
 
-![Requests](./screenshots/request.png)
+![Requests](./screenshots/Request.png)
 
 - Accept / Reject requests  
 - User details  
@@ -108,7 +108,7 @@ HireHelper allows users to:
 
 #### 📤 My Requests
 
-![My Requests](./screenshots/myRequest.png)
+![My Requests](./screenshots/MyRequest.png)
 
 - Track sent requests  
 - Status (Pending / Accepted / Rejected)  
@@ -117,7 +117,7 @@ HireHelper allows users to:
 
 ### 🔔 Notifications
 
-![Notifications](./screenshots/notification.png)
+![Notifications](./screenshots/Notification.png)
 
 - New request alerts  
 - Accept/Reject updates  
@@ -128,7 +128,7 @@ HireHelper allows users to:
 
 ### ⚙️ Settings
 
-![Settings](./screenshots/settings.png)
+![Settings](./screenshots/Settings.png)
 
 - Update profile info  
 - Change password  
@@ -141,114 +141,89 @@ HireHelper allows users to:
 
 ### 🔹 Tasks
 
-- `POST /api/tasks/create`  
-- `GET /api/tasks/allTasks`  
-- `GET /api/tasks/myTask`  
+- POST /api/tasks/create  
+- GET /api/tasks/allTasks  
+- GET /api/tasks/myTask  
 
 ### 🔹 Requests
 
-- `POST /api/requests/send`  
-- `GET /api/requests/received`  
-- `GET /api/requests/myRequests`  
-- `PUT /api/requests/accept/:id`  
-- `PUT /api/requests/reject/:id`  
+- POST /api/requests/send  
+- GET /api/requests/received  
+- GET /api/requests/myRequests  
+- PUT /api/requests/accept/:id  
+- PUT /api/requests/reject/:id  
 
 ### 🔹 Notifications
 
-- `GET /api/notifications`  
-- `PUT /api/notifications/read/:id`  
+- GET /api/notifications  
+- PUT /api/notifications/read/:id  
 
 ---
 
 ## 🛠️ Tech Stack
 
-### Frontend
-
-- React.js  
-- Tailwind CSS  
-- React Router DOM  
-- Axios  
-- React Toastify  
-- React Icons  
-
-### Backend
-
-- Node.js  
-- Express.js  
-- MongoDB  
-- Mongoose  
-- JWT Authentication  
-- Nodemailer  
-- Cloudinary  
-- Express FileUpload  
+Frontend: React.js, Tailwind CSS, React Router DOM, Axios, React Toastify, React Icons  
+Backend: Node.js, Express.js, MongoDB, Mongoose, JWT, Nodemailer, Cloudinary  
 
 ---
 
 ## 📁 Folder Structure
 
-
 HireHelper/
-│
 ├── frontend/
-│ ├── components/
-│ ├── pages/
-│ ├── services/
-│ └── App.jsx
-│
+│   ├── components/
+│   ├── pages/
+│   ├── services/
+│   └── App.jsx
 ├── backend/
-│ ├── controllers/
-│ ├── routes/
-│ ├── models/
-│ ├── middleware/
-│ └── utils/
-│
-├── screenshots/
-
+│   ├── controllers/
+│   ├── routes/
+│   ├── models/
+│   ├── middleware/
+│   └── utils/
+└── screenshots/
 
 ---
 
 ## ⚙️ Installation & Setup
 
-### 1️⃣ Clone Repository
+1. Clone Repository  
+git clone https://github.com/your-username/HireHelper.git  
+cd HireHelper  
 
-```bash
-git clone https://github.com/your-username/HireHelper.git
-cd HireHelper
-2️⃣ Backend Setup
-cd backend
-npm install
-npm run dev
-3️⃣ Frontend Setup
-cd frontend
-npm install
-npm run dev
-🔐 Environment Variables
+2. Backend Setup  
+cd backend  
+npm install  
+npm run dev  
 
-Create .env file in backend:
+3. Frontend Setup  
+cd frontend  
+npm install  
+npm run dev  
 
-MONGODB_URL=your_mongodb_url
-PORT=4000
+---
 
-JWT_SECRET=your_secret
+## 🔐 Environment Variables
 
-MAIL_USER=your_email
-MAIL_PASS=your_email_password
+MONGODB_URL=your_mongodb_url  
+PORT=4000  
+JWT_SECRET=your_secret  
+MAIL_USER=your_email  
+MAIL_PASS=your_email_password  
+CLOUD_NAME=your_cloud_name  
+API_KEY=your_api_key  
+API_SECRET=your_api_secret  
 
-CLOUD_NAME=your_cloud_name
-API_KEY=your_api_key
-API_SECRET=your_api_secret
-🚧 Project Status
+---
 
-✅ Authentication System
-✅ Task Management
-✅ Request System
-✅ Notifications
-✅ Settings Page
+## 🚧 Project Status
 
-🎉 Project Completed Successfully
+Completed: Authentication, Tasks, Requests, Notifications, Settings  
 
-💡 Future Enhancements
-Real-time chat between users
-Payment integration
-Task rating & reviews
-Advanced filtering & search
+---
+
+## 💡 Future Enhancements
+
+Real-time chat, Payment integration, Task rating & reviews, Advanced filtering & search  
+
+---
