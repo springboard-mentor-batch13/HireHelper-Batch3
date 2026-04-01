@@ -3,6 +3,7 @@ import api from "../services/api";
 
 // 🔥 REACT ICONS
 import { FiList, FiClock, FiCheckCircle, FiInbox, FiArrowRight } from "react-icons/fi";
+import { Link } from "react-router-dom";
 
 export default function DashBoardHome() {
 
@@ -177,9 +178,11 @@ export default function DashBoardHome() {
           Need help? Post a new task now!
         </p>
 
-        <button className="bg-white text-blue-600 px-5 py-2 rounded-lg font-semibold hover:bg-gray-100 transition">
-          + Add New Task
-        </button>
+        <Link to="/dashboard/add-task">
+            <button className="bg-white text-blue-600 px-5 py-2 rounded-lg font-semibold hover:bg-gray-100 transition">
+                + Add New Task
+            </button>
+        </Link>
 
       </div>
 

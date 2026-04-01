@@ -7,7 +7,7 @@ const Settings = () => {
 
   const [user, setUser] = useState(null);
   const [edit, setEdit] = useState(false);
-  const [showDeleteModal, setShowDeleteModal] = useState(false); // 🔥 added
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   const navigate = useNavigate();
 
@@ -69,7 +69,6 @@ const Settings = () => {
     }
   };
 
-  // 🔥 UPDATED DELETE (no alert)
   const handleDeleteAccount = async () => {
     try {
       await api.delete("/user/delete-account");
@@ -86,20 +85,20 @@ const Settings = () => {
     }
   };
 
-  if (!user) return <div className="ml-56 p-6">Loading...</div>;
+  if (!user) return <div className="md:ml-56 p-4 sm:p-6">Loading...</div>;
 
   return (
-    <div className="ml-1 min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50">
 
-      <div className="max-w-3xl mx-auto p-6 space-y-6">
+      <div className="max-w-3xl mx-auto p-4 sm:p-6 space-y-6">
 
         {/* PROFILE */}
-        <div className="bg-white rounded-xl border p-6">
-          <h2 className="text-lg font-semibold mb-4">Profile Picture</h2>
+        <div className="bg-white rounded-lg sm:rounded-xl border p-4 sm:p-6">
+          <h2 className="text-base sm:text-lg font-semibold mb-4">Profile Picture</h2>
 
-          <div className="flex items-center gap-4">
+          <div className="flex flex-col sm:flex-row items-center gap-4">
 
-            <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200">
+            <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200 flex-shrink-0">
               {user.profile_picture ? (
                 <img src={user.profile_picture} className="w-full h-full object-cover" />
               ) : (
@@ -109,14 +108,14 @@ const Settings = () => {
               )}
             </div>
 
-            <div className="flex items-center gap-4">
+            <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto">
 
-              <label className="bg-blue-500 text-white px-4 py-1.5 rounded-md text-sm cursor-pointer">
+              <label className="bg-blue-500 text-white px-4 py-2 rounded-md text-sm cursor-pointer hover:bg-blue-600 w-full sm:w-auto text-center">
                 Change Photo
                 <input type="file" onChange={handleImageChange} className="hidden" />
               </label>
 
-              <button onClick={handleRemoveImage} className="text-sm text-gray-600">
+              <button onClick={handleRemoveImage} className="text-sm text-gray-600 hover:text-gray-800">
                 Remove
               </button>
 
@@ -130,75 +129,75 @@ const Settings = () => {
         </div>
 
         {/* PERSONAL INFO */}
-        <div className="bg-white rounded-xl border p-6 shadow-sm">
+        <div className="bg-white rounded-lg sm:rounded-xl border p-4 sm:p-6 shadow-sm">
 
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="text-lg font-semibold">Personal Information</h2>
+          <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 sm:gap-0 mb-6">
+            <h2 className="text-base sm:text-lg font-semibold">Personal Information</h2>
 
             <button
               onClick={() => {
                 setEdit(!edit);
                 if (edit) fetchUser();
               }}
-              className="text-blue-500 text-sm"
+              className="text-blue-500 hover:text-blue-600 text-sm"
             >
               {edit ? "Cancel" : "Edit"}
             </button>
           </div>
 
-          <div className="space-y-5">
+          <div className="space-y-4 sm:space-y-5">
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
 
               <div>
-                <label className="text-sm text-gray-600">First Name</label>
+                <label className="text-xs sm:text-sm text-gray-600 block mb-2">First Name</label>
                 <input
                   disabled={!edit}
                   name="first_name"
                   value={user.first_name || ""}
                   onChange={handleChange}
-                  className="mt-1 w-full border px-3 py-2 rounded-lg text-sm"
+                  className="w-full border border-gray-200 px-3 py-2 rounded-lg text-sm disabled:bg-gray-100 focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               </div>
 
               <div>
-                <label className="text-sm text-gray-600">Last Name</label>
+                <label className="text-xs sm:text-sm text-gray-600 block mb-2">Last Name</label>
                 <input
                   disabled={!edit}
                   name="last_name"
                   value={user.last_name || ""}
                   onChange={handleChange}
-                  className="mt-1 w-full border px-3 py-2 rounded-lg text-sm"
+                  className="w-full border border-gray-200 px-3 py-2 rounded-lg text-sm disabled:bg-gray-100 focus:ring-2 focus:ring-blue-500 outline-none"
                 />
               </div>
 
             </div>
 
             <div>
-              <label className="text-sm text-gray-600">Email Address</label>
+              <label className="text-xs sm:text-sm text-gray-600 block mb-2">Email Address</label>
               <input
                 disabled
                 name="email_id"
                 value={user.email_id || ""}
-                className="mt-1 w-full border px-3 py-2 rounded-lg bg-gray-100 text-sm"
+                className="w-full border border-gray-200 px-3 py-2 rounded-lg bg-gray-100 text-sm"
               />
             </div>
 
             <div>
-              <label className="text-sm text-gray-600">Phone Number</label>
+              <label className="text-xs sm:text-sm text-gray-600 block mb-2">Phone Number</label>
               <input
                 disabled={!edit}
                 name="phone_number"
                 value={user.phone_number || ""}
                 onChange={handleChange}
-                className="mt-1 w-full border px-3 py-2 rounded-lg text-sm"
+                className="w-full border border-gray-200 px-3 py-2 rounded-lg text-sm disabled:bg-gray-100 focus:ring-2 focus:ring-blue-500 outline-none"
               />
             </div>
 
             {edit && (
               <button
                 onClick={handleSave}
-                className="bg-blue-500 text-white px-5 py-2 rounded-lg text-sm"
+                className="w-full sm:w-auto bg-blue-500 text-white px-5 py-2 rounded-lg text-sm hover:bg-blue-600 transition"
               >
                 Save Changes
               </button>
@@ -208,37 +207,37 @@ const Settings = () => {
         </div>
 
         {/* SECURITY */}
-        <div className="bg-white rounded-xl border p-6 flex justify-between items-center">
-          <div>
-            <h2 className="text-lg font-semibold">Account Security</h2>
-            <p className="text-sm text-gray-500">
+        <div className="bg-white rounded-lg sm:rounded-xl border p-4 sm:p-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+          <div className="flex-1">
+            <h2 className="text-base sm:text-lg font-semibold">Account Security</h2>
+            <p className="text-xs sm:text-sm text-gray-500">
               Change your password securely using OTP verification
             </p>
           </div>
 
           <button
             onClick={() => navigate("/change-password/email")}
-            className="bg-blue-500 text-white px-4 py-2 rounded-lg text-sm"
+            className="w-full sm:w-auto bg-blue-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-600 transition"
           >
             Change Password
           </button>
         </div>
 
         {/* DANGER ZONE */}
-        <div className="bg-white rounded-xl border p-6">
+        <div className="bg-white rounded-lg sm:rounded-xl border p-4 sm:p-6">
 
-          <h2 className="text-lg font-semibold text-red-600 mb-2">
+          <h2 className="text-base sm:text-lg font-semibold text-red-600 mb-2">
             Danger Zone
           </h2>
 
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-xs sm:text-sm text-gray-500 mb-4">
             Deleting your account will permanently remove all your data.
             This action cannot be undone.
           </p>
 
           <button
-            onClick={() => setShowDeleteModal(true)} // 🔥 changed
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-md text-sm transition"
+            onClick={() => setShowDeleteModal(true)}
+            className="w-full sm:w-auto bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm transition"
           >
             Delete Account
           </button>
@@ -249,9 +248,9 @@ const Settings = () => {
 
       {/* 🔥 DELETE MODAL */}
       {showDeleteModal && (
-        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50">
+        <div className="fixed inset-0 bg-black/40 flex justify-center items-center z-50 p-4">
 
-          <div className="bg-white p-6 rounded-xl w-[350px] text-center">
+          <div className="bg-white p-6 rounded-lg sm:rounded-xl w-full max-w-sm text-center">
 
             <h2 className="text-lg font-semibold text-red-600 mb-2">
               Delete Account?
@@ -261,20 +260,20 @@ const Settings = () => {
               Do you want to delete your account permanently?
             </p>
 
-            <div className="flex justify-center gap-3">
+            <div className="flex flex-col-reverse sm:flex-row justify-center gap-3">
 
               <button
                 onClick={() => setShowDeleteModal(false)}
-                className="border px-4 py-2 rounded"
+                className="border border-gray-300 px-4 py-2 rounded-lg hover:bg-gray-100 transition order-2 sm:order-1"
               >
                 No
               </button>
 
               <button
                 onClick={handleDeleteAccount}
-                className="bg-red-500 text-white px-4 py-2 rounded"
+                className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition order-1 sm:order-2"
               >
-                Yes
+                Yes, Delete
               </button>
 
             </div>

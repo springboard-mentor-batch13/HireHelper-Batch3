@@ -67,16 +67,27 @@ exports.createTask = async (req, res) => {
 
 // ------------------------- GET ALL TASKS -------------------------
 
-
 exports.getAllTasks = async (req, res) => {
-
   try {
-
     const tasks = await Task.find().populate("createdBy", "first_name email_id").sort({ createdAt: -1 });
+
+    // 🔥 ADD REQUEST COUNT TO EACH TASK
+    const tasksWithRequestCount = await Promise.all(
+      tasks.map(async (task) => {
+        const requestCount = await Request.countDocuments({
+          task_id: task._id,
+          status: "pending"
+        });
+        return {
+          ...task.toObject(),
+          requestCount
+        };
+      })
+    );
 
     res.status(200).json({
       success: true,
-      tasks,
+      tasks: tasksWithRequestCount,
     });
   }
   catch (error) {
@@ -90,23 +101,33 @@ exports.getAllTasks = async (req, res) => {
 
 // ------------------------- GET MY TASKS -------------------------
 
-
 exports.getMyTasks = async (req, res) => {
-
   try {
-
     const userId = req.user.id;
     const tasks = await Task.find({
       createdBy: userId,
     })
     .sort({ createdAt: -1 });
 
+    // 🔥 ADD REQUEST COUNT TO EACH TASK
+    const tasksWithRequestCount = await Promise.all(
+      tasks.map(async (task) => {
+        const requestCount = await Request.countDocuments({
+          task_id: task._id,
+          status: "pending"
+        });
+        return {
+          ...task.toObject(),
+          requestCount
+        };
+      })
+    );
+
     res.status(200).json({
       success: true,
-      tasks,
+      tasks: tasksWithRequestCount,
     });
   }
-
   catch (error) {
     console.error("GET MY TASK ERROR:", error);
     res.status(500).json({
@@ -233,25 +254,55 @@ exports.markTaskCompleted = async (req, res) => {
   try {
     const { taskId } = req.params;
 
+    // 🔍 1. FIND TASK
     const task = await Task.findById(taskId);
 
     if (!task) {
       return res.status(404).json({ message: "Task not found" });
     }
 
+    // 🔁 2. HANDLE ALREADY COMPLETED (IMPORTANT 🔥)
     if (task.status === "completed") {
-      return res.status(400).json({ message: "Already completed" });
+      return res.status(200).json({
+        success: true,
+        message: "Already completed",
+      });
     }
 
+    // ✅ 3. MARK TASK COMPLETED
     task.status = "completed";
     await task.save();
 
-    res.json({
-      success: true,
-      message: "Completed",
+    // 🔍 4. GET ACCEPTED REQUEST
+    const acceptedRequest = await Request.findOne({
+      task_id: taskId,
+      requester_id: task.helper_id, // 🔥 more accurate
     });
 
-  } catch {
+    if (acceptedRequest) {
+      // ⚠️ only update if schema allows "completed"
+      acceptedRequest.status = "completed";
+      await acceptedRequest.save();
+
+      // 🔔 5. SEND NOTIFICATION
+      const owner = await User.findById(req.user.id);
+
+      await Notification.create({
+        user_id: acceptedRequest.requester_id,
+        body: `${owner.first_name} ${owner.last_name} completed your task "${task.title}"`,
+      });
+
+    } else {
+      console.log("⚠️ No accepted request found");
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Task completed successfully",
+    });
+
+  } catch (error) {
+    console.error("❌ ERROR:", error);
     res.status(500).json({ message: "Failed to complete" });
   }
 };

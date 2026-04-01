@@ -114,19 +114,19 @@ export default function AddTask() {
 
 /* -------------------------- UI --------------------------*/
 return (
-    <div className="min-h-screen flex justify-center items-center bg-gray-100">
-        <div className="bg-white p-6 rounded-xl shadow-md w-full max-w-lg">
-            <h2 className="text-xl font-semibold mb-4 text-center">
+    <div className="min-h-screen flex justify-center items-center bg-gray-100 p-4">
+        <div className="bg-white p-4 sm:p-6 rounded-xl shadow-md w-full max-w-2xl">
+            <h2 className="text-xl sm:text-2xl font-semibold mb-4 sm:mb-6 text-center">
                 Create Task
             </h2>
-            <form onSubmit={handleSubmit} className="space-y-3">
+            <form onSubmit={handleSubmit} className="space-y-3 sm:space-y-4">
             <input
             type="text"
             name="title"
             placeholder="Task title"
             value={taskData.title}
             onChange={handleInput}
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
             required/>
             
             <textarea
@@ -134,7 +134,8 @@ return (
             placeholder="Description"
             value={taskData.description}
             onChange={handleInput}
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none resize-none"
+            rows="4"
             required/>
             
             <input
@@ -143,73 +144,92 @@ return (
             placeholder="Location"
             value={taskData.location}
             onChange={handleInput}
-            className="w-full border p-2 rounded"
+            className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
             required/>
             
-            <div className="flex gap-2">
-                <input
-                type="date"
-                name="startDate"
-                value={taskData.startDate}
-                onChange={handleInput}
-                className="w-full border p-2 rounded"
-                required/>
-                <input
-                type="time"
-                name="startTime"
-                value={taskData.startTime}
-                onChange={handleInput}
-                className="w-full border p-2 rounded"
-                required/>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label className="text-xs sm:text-sm text-gray-600">Start Date</label>
+                    <input
+                    type="date"
+                    name="startDate"
+                    value={taskData.startDate}
+                    onChange={handleInput}
+                    className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    required/>
+                </div>
+                <div>
+                    <label className="text-xs sm:text-sm text-gray-600">Start Time</label>
+                    <input
+                    type="time"
+                    name="startTime"
+                    value={taskData.startTime}
+                    onChange={handleInput}
+                    className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    required/>
+                </div>
             </div>
-            <div className="flex gap-2">
-                <input
-                type="date"
-                name="endDate"
-                value={taskData.endDate}
-                onChange={handleInput}
-                className="w-full border p-2 rounded"
-                />
-                <input
-                type="time"
-                name="endTime"
-                value={taskData.endTime}
-                onChange={handleInput}
-                className="w-full border p-2 rounded"
-                />
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label className="text-xs sm:text-sm text-gray-600">End Date</label>
+                    <input
+                    type="date"
+                    name="endDate"
+                    value={taskData.endDate}
+                    onChange={handleInput}
+                    className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+                </div>
+                <div>
+                    <label className="text-xs sm:text-sm text-gray-600">End Time</label>
+                    <input
+                    type="time"
+                    name="endTime"
+                    value={taskData.endTime}
+                    onChange={handleInput}
+                    className="w-full border border-gray-200 p-3 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
+                    />
+                </div>
             </div>
+
             {/* upload */}
             <div 
             onClick={() => fileRef.current.click()}
             onDragOver={(e) => e.preventDefault()}
             onDrop={handleDrop}
-            className="border-2 border-dashed border-blue-400 p-4 rounded text-center cursor-pointer">
-                {preview ? "Change image" : "Click or drag image"}
+            className="border-2 border-dashed border-blue-400 p-6 rounded-lg text-center cursor-pointer hover:border-blue-500 transition">
+                <p className="text-sm sm:text-base text-gray-600">
+                    {preview ? "Change image" : "Click or drag image"}
+                </p>
                 <input
                 type="file"
                 hidden
                 ref={fileRef}
                 onChange={(e) => handleImage(e.target.files[0])}/>
             </div>
+
             {/* preview */}
             {preview && (
                 <div className="text-center">
                     <img
                     src={preview}
-                    className="h-32 mx-auto mt-2 rounded"/>
+                    className="h-32 sm:h-48 mx-auto rounded-lg"
+                    alt="preview"/>
                     <button 
                     type="button"
                     onClick={removeImage}
-                    className="mt-2 px-3 py-1 bg-red-500 text-white rounded">
-                        Remove
+                    className="mt-3 px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 text-sm">
+                        Remove Image
                     </button>
                 </div>
             )}
+
             <button
             disabled={loading}
-            className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 disabled:bg-gray-400">
+            className="w-full bg-blue-600 text-white p-3 rounded-lg hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed font-medium transition text-sm sm:text-base">
                 {loading ? "Creating..." : "Create Task"}
-                </button>
+            </button>
             </form>
         </div>
     </div>

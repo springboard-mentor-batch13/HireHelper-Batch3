@@ -3,7 +3,7 @@ const Task = require("../models/Task");
 const Request = require("../models/Request");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-const mailSender = require("../utils/MailSender");
+const mailSender = require("../utils/mailSender");
 
 // ================== REGISTER ==================
 exports.register = async (req, res) => {

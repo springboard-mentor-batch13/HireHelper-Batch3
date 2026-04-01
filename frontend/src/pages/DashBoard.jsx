@@ -56,13 +56,13 @@ export default function DashBoard() {
   };
 
   return (
-    <div className="flex bg-gray-100">
+    <div className="flex bg-gray-100 min-h-screen">
 
       {/* Sidebar */}
       <Sidebar />
 
       {/* Main */}
-      <div className="flex-1 ml-50 min-h-screen">
+      <div className="flex-1 md:ml-52 w-full min-h-screen overflow-x-hidden">
 
         {/* Header */}
         <DashBoardHeader

@@ -36,7 +36,7 @@ function App() {
   const hideNavbar = location.pathname.startsWith("/dashboard");
 
   return (
-    <>
+    <div>
 
       {/* Navbar */}
       {!hideNavbar && <Navbar />}
@@ -80,7 +80,7 @@ function App() {
 
       </Routes>
 
-    </>
+    </div>
   );
 }
 

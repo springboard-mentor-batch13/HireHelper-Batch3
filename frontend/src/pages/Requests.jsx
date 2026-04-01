@@ -43,7 +43,10 @@ export default function Requests() {
         )
       );
 
-      toast.success("Request Accepted ✅");
+      toast.success("Request Accepted ");
+
+      // 🔄 AUTO REFRESH
+      setTimeout(() => fetchRequests(), 500);
 
     } catch {
       toast.error("Failed to accept");
@@ -65,7 +68,10 @@ export default function Requests() {
         )
       );
 
-      toast.success("Request Rejected ❌");
+      toast.success("Request Rejected");
+
+      // 🔄 AUTO REFRESH
+      setTimeout(() => fetchRequests(), 500);
 
     } catch {
       toast.error("Failed to reject");
@@ -97,6 +103,9 @@ export default function Requests() {
 
       toast.success("Task Completed 🎉");
 
+      // 🔄 AUTO REFRESH
+      setTimeout(() => fetchRequests(), 500);
+
     } catch {
       toast.error("Failed to complete");
     } finally {
@@ -109,16 +118,16 @@ export default function Requests() {
   }, []);
 
   return (
-    <div className="bg-gray-50 min-h-screen p-8">
+    <div className="bg-gray-50 min-h-screen p-4 sm:p-6 lg:p-8">
 
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Requests</h1>
-        <p className="text-gray-600 mt-1">
+      <div className="mb-6 sm:mb-8">
+        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Requests</h1>
+        <p className="text-gray-600 mt-1 text-sm sm:text-base">
           Review and manage incoming requests
         </p>
       </div>
 
-      {loading && <p className="text-center mt-10 text-gray-500">Loading...</p>}
+      {loading && <p className="text-center mt-10 text-gray-500 animate-pulse">Loading...</p>}
 
       {!loading && requests.length === 0 && (
         <p className="text-center mt-10 text-gray-500">
@@ -126,7 +135,7 @@ export default function Requests() {
         </p>
       )}
 
-      <div className="space-y-5">
+      <div className="space-y-4 sm:space-y-5">
         {!loading &&
           requests.map((r) => (
             <RequestCard

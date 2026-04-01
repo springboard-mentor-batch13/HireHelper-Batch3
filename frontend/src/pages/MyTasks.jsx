@@ -24,12 +24,12 @@ export default function MyTasks() {
   }, []);
 
   return (
-    <div className="p-6">
+    <div className="p-4 sm:p-6 w-full">
 
       {/* HEADER */}
-      <div className="mb-6">
-        <h1 className="text-2xl font-bold">My Tasks</h1>
-        <p className="text-gray-500 text-sm">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-xl sm:text-2xl font-bold">My Tasks</h1>
+        <p className="text-gray-500 text-xs sm:text-sm">
           Manage your posted tasks
         </p>
       </div>
@@ -50,20 +50,24 @@ export default function MyTasks() {
 
       {/* GRID */}
       {!loading && tasks.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-5">
           {tasks.map((task) => (
             <TaskCard
               key={task._id}
               task={task}
               isOwner
-              onDelete={(id) =>
-                setTasks((prev) => prev.filter((t) => t._id !== id))
-              }
-              onUpdate={(updated) =>
+              onDelete={(id) => {
+                setTasks((prev) => prev.filter((t) => t._id !== id));
+                // 🔄 AUTO REFRESH after delete
+                setTimeout(() => fetchMyTasks(), 500);
+              }}
+              onUpdate={(updated) => {
                 setTasks((prev) =>
                   prev.map((t) => (t._id === updated._id ? updated : t))
-                )
-              }
+                );
+                // 🔄 AUTO REFRESH after update
+                setTimeout(() => fetchMyTasks(), 500);
+              }}
             />
           ))}
         </div>
