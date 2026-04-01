@@ -5,6 +5,8 @@ HireHelper is a **full-stack web application** that connects users who need help
 It provides a complete workflow:  
 ➡️ Task Creation → Request Sending → Accept/Reject → Notifications → Task Management
 
+![LandingPage](./screenshots/hirehelper.png)
+
 ---
 
 ## 📌 Project Overview
