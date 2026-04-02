@@ -12,7 +12,10 @@ dotenv.config();
 database.connect();
 
 // ================= MIDDLEWARE =================
-app.use(cors());
+app.use( cors({
+    origin: true, // allow all (safe for now)
+    credentials: true,
+  }));
 
 
 // ================= FILE UPLOAD =================

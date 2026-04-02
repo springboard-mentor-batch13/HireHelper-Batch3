@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: "http://localhost:4000/api", 
+  baseURL: "https://hirehelper-backend-f7vw.onrender.com/api", 
 });
 
 // 🔹 REQUEST INTERCEPTOR
