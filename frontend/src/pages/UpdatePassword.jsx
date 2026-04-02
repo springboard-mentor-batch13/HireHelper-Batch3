@@ -1,7 +1,7 @@
 // UpdatePassword.jsx
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import axios from "axios";
+import API from "../services/api";
 import { toast } from "react-toastify";
 
 export default function UpdatePassword() {
@@ -29,7 +29,7 @@ export default function UpdatePassword() {
     }
 
     try {
-      await axios.post("http://localhost:4000/api/auth/reset-password", {
+      await API.post("/auth/reset-password", {
         password: formData.password,
         confirmPassword: formData.confirmPassword,
         token: token,

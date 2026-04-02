@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import API from "../services/api";
 import { toast } from "react-toastify";
 
 export default function Login() {
@@ -27,8 +27,8 @@ export default function Login() {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/auth/login",
+      const response = await API.post(
+        "/auth/login",
         {
           email_id: formData.email,
           password: formData.password,

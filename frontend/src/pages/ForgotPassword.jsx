@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import axios from "axios";
+import API from "../services/api";
 import { toast } from "react-toastify";
 
 export default function ForgotPassword() {
@@ -19,7 +19,7 @@ export default function ForgotPassword() {
     try {
       setLoading(true);
 
-      await axios.post("http://localhost:4000/api/auth/forgot-password", {
+      await API.post("/auth/forgot-password", {
         email: email,
       });
 

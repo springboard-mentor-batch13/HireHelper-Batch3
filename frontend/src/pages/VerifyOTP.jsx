@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import axios from "axios";
+import API from "../services/api";
 import OTPInput from "react-otp-input";
 import { toast } from "react-toastify";
 
@@ -21,8 +21,8 @@ export default function Verify() {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:4000/api/auth/verify-otp",
+      const response = await API.post(
+        "/auth/verify-otp",
         {
           email_id: email,
           otp: otp,
@@ -46,8 +46,8 @@ export default function Verify() {
 
     try {
 
-      const response = await axios.post(
-        "http://localhost:4000/api/auth/resend-otp",
+      const response = await API.post(
+        "/auth/resend-otp",
         {
           email_id: email,
         }
