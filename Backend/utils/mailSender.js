@@ -14,12 +14,18 @@ const mailSender = async (email, subject, text) => {
       from: process.env.MAIL_USER,
       to: email,
       subject,
-      html:text,
+      
+      // ✅ BOTH ADD KARO
+      text: text,         // plain text
+      html: `<p>${text}</p>`  // html version
     });
+    console.log("Sending OTP to:", email_id);
+    console.log("MAIL SENT:", info.response);
 
     return info;
+
   } catch (error) {
-    console.log("Mail error:", error.message);
+    console.log("MAIL ERROR FULL:", error); // 🔥 full error print karo
     throw error;
   }
 };

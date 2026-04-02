@@ -28,62 +28,70 @@ export default function Register() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    if (
-      !formData.firstName ||
-      !formData.lastName ||
-      !formData.email ||
-      !formData.phone ||
-      !formData.password
-    ) {
-      toast.error("All fields are required");
-      return;
+  if (
+    !formData.firstName ||
+    !formData.lastName ||
+    !formData.email ||
+    !formData.phone ||
+    !formData.password
+  ) {
+    toast.error("All fields are required");
+    return;
+  }
+
+  const passwordRegex =
+    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/;
+
+  if (!passwordRegex.test(formData.password)) {
+    toast.error(
+      "Password must contain uppercase, lowercase, number, special character and minimum 8 characters"
+    );
+    return;
+  }
+
+  const phoneRegex = /^[0-9]{10}$/;
+
+  if (!phoneRegex.test(formData.phone)) {
+    toast.error("Phone number must be exactly 10 digits");
+    return;
+  }
+
+  try {
+    setLoading(true);
+
+    const response = await API.post("/auth/register", {
+      first_name: formData.firstName,
+      last_name: formData.lastName,
+      email_id: formData.email,
+      phone_number: formData.phone,
+      password: formData.password,
+    });
+
+    console.log("RESPONSE:", response.data);
+
+    // 🔥 FIXED LOGIC
+    if (response.data?.success || response.data?.message) {
+      toast.success(response.data.message || "OTP sent successfully");
+
+      // 👉 IMPORTANT: navigate always after success
+      navigate("/verify", {
+        state: { email: formData.email },
+      });
+    } else {
+      toast.error(response.data?.message || "Something went wrong");
     }
 
-    if (!passwordRegex.test(formData.password)) {
-      toast.error(
-        "Password must contain uppercase, lowercase, number, special character and minimum 8 characters"
-      );
-      return;
-    }
-
-    const phoneRegex = /^[0-9]{10}$/;
-
-    if (!phoneRegex.test(formData.phone)) {
-      toast.error("Phone number must be exactly 10 digits");
-      return;
-    }
-
-    try {
-      setLoading(true);
-
-      const response = await API.post(
-        "/auth/register",
-        {
-          first_name: formData.firstName,
-          last_name: formData.lastName,
-          email_id: formData.email,
-          phone_number: formData.phone,
-          password: formData.password,
-        }
-      );
-
-      if (response.data.success) {
-        toast.success(response.data.message);
-        navigate("/verify", { state: { email: formData.email } });
-      } else {
-        toast.error(response.data.message);
-      }
-
-    } catch (error) {
-      toast.error(
-        error.response?.data?.message || "Registration failed"
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
+  } catch (error) {
+    console.log(error);
+    toast.error(
+      error.response?.data?.message || "Registration failed"
+    );
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen bg-[#dcefe6] flex items-center justify-center font-sans">
