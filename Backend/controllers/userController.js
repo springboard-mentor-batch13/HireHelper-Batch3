@@ -1,4 +1,4 @@
-const User = require("../models/user");
+const User = require("../models/User");
 const Task = require("../models/Task");
 const Request = require("../models/Request");
 const Notification = require("../models/Notification");

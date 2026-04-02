@@ -46,12 +46,24 @@ app.use("/api/notifications", require("./routes/notificationRoutes"));
 app.use("/api/user", require("./routes/userRoutes"));
 
 // ================= DEFAULT ROUTE =================
-app.get("/",  (req, res) => {
-  res.send("HireHelper API is running");
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "HireHelper API is running"
+  });
+});
+
+// error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({
+    success: false,
+    message: "Something went wrong"
+  });
 });
 
 // ================= START SERVER =================
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5000;
 app.listen(PORT,() => {
   console.log(
     `Server running on port ${PORT}`
