@@ -20,7 +20,7 @@ const mailSender = async (email, subject, text) => {
       text: text,         // plain text
       html: `<p>${text}</p>`  // html version
     });
-    console.log("Sending OTP to:", email_id);
+    console.log("Sending OTP to:", email);
     console.log("MAIL SENT:", info.response);
 
     return info;
