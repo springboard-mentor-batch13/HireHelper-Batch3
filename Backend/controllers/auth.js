@@ -66,15 +66,11 @@ exports.register = async (req, res) => {
       otpExpiry: Date.now() + 5 * 60 * 1000,
     });
 
-   try {
-  await mailSender(
-    email_id,
-    "HireHelper OTP Verification",
-    `Your HireHelper OTP is ${otp}`
-  );
-} catch (error) {
-  console.log("Mail failed:", error.message);
-}
+      await mailSender(
+  email_id,
+  "HireHelper OTP Verification",
+  `Your HireHelper OTP is ${otp}`
+);
 
     return res.status(201).json({
       success: true,

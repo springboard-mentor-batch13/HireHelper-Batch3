@@ -26,6 +26,8 @@ await transporter.verify();
     });
     console.log("Sending OTP to:", email);
     console.log("MAIL SENT:", info.response);
+    console.log("MAIL USER:", process.env.MAIL_USER);
+console.log("SENDING TO:", email);
 
     return info;
 
