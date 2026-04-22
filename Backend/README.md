@@ -733,7 +733,7 @@ PORT=5000
 NODE_ENV=development
 
 # Database
-MONGODB_URL=mongodb+srv://username:password@cluster.mongodb.net/hirehelper
+MONGODB_URL=mongodb+srv://username:password@cluster.mongodb.net
 
 # JWT
 JWT_SECRET=your_super_secret_jwt_key_here
@@ -829,7 +829,7 @@ GET /api/tasks/allTasks?page=1&limit=10
 NODE_ENV=production
 
 # Use MongoDB Atlas URL
-MONGODB_URL=mongodb+srv://prod_user:prod_password@prod-cluster.mongodb.net/hirehelper
+MONGODB_URL=mongodb+srv://prod_user:prod_password@prod-cluster.mongodb.net/
 
 # Strong JWT secret
 JWT_SECRET=generate_strong_random_string_here
